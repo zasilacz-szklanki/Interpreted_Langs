@@ -2,34 +2,9 @@
 
 let todoList = [];
 
-const YOUR_API_KEY = "$2a$10$IdjokXS5G6PIQCzoPY93iO8aDZClLrt3cII7kV8xVG7HLLVYcbiJa";
-const BIN_ID = "68f26b21ae596e708f1913e1";
-
-let initList = function () {
-    let savedList = window.localStorage.getItem("todos");
-    if (savedList != null)
-        todoList = JSON.parse(savedList);
-    else {
-        todoList.push(
-            {
-                title: "Learn JS",
-                description: "Create a demo application for my TODO's",
-                place: "445",
-                category: '',
-                dueDate: new Date(2024, 10, 16)
-            },
-            {
-                title: "Lecture test",
-                description: "Quick test from the first three lectures",
-                place: "F6",
-                category: '',
-                dueDate: new Date(2024, 10, 17)
-            }
-        );
-    }
-}
-
-// initList();
+const YOUR_API_KEY = "$2a$10$4L4DIXkmhqFOuplpG0v5meSVGNPQQtFq4KAjROORHFduED5MEvo16";
+const BIN_ID = "68f24e4143b1c97be96d2292";
+const GROQ_API_KEY = "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";
 
 let req = new XMLHttpRequest();
 req.responseType = "json";
@@ -68,29 +43,43 @@ let updateTodoList = function () {
         todoListDiv.removeChild(todoListDiv.firstChild);
     }
 
-    //add all elements
-    let filterInput = document.getElementById("inputSearch");
-    for (let todo in todoList) {
-        if (
-            (filterInput.value == "") ||
-            (todoList[todo].title.includes(filterInput.value)) ||
-            (todoList[todo].description.includes(filterInput.value))
-        ) {
-            let newElement = document.createElement("p");
-            let newContent = document.createTextNode(todoList[todo].title + " " + todoList[todo].description);
-            let newDeleteButton = document.createElement("input");
-            newDeleteButton.type = "button";
-            newDeleteButton.value = "x";
-            newDeleteButton.addEventListener("click",
-                function () {
-                    deleteTodo(todo);
-                });
-            newElement.appendChild(newContent);
-            newElement.appendChild(newDeleteButton);
-            todoListDiv.appendChild(newElement);
-        }
+    //get filter inputs
+    let filterInput = document.getElementById("inputSearch").value.toLowerCase().trim();
+    let startDateInput = document.getElementById("startDate");
+    let endDateInput = document.getElementById("endDate");
+
+    let startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+    let endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+    //filter and display
+    let filteredTodos = todoList.filter(todo => {
+        let matchesText =
+            filterInput === "" ||
+            todo.title.toLowerCase().includes(filterInput) ||
+            todo.description.toLowerCase().includes(filterInput);
+
+        let dueDate = new Date(todo.dueDate);
+        let matchesDate =
+            (!startDate || dueDate >= startDate) &&
+            (!endDate || dueDate <= endDate);
+
+        return matchesText && matchesDate;
+    });
+
+    for (let i = 0; i < filteredTodos.length; i++) {
+        let newElement = document.createElement("p");
+        let newContent = document.createTextNode(filteredTodos[i].title + " " + filteredTodos[i].description + " " + filteredTodos[i].category);
+        let newDeleteButton = document.createElement("input");
+        newDeleteButton.type = "button";
+        newDeleteButton.value = "x";
+        newDeleteButton.addEventListener("click", function () {
+            deleteTodo(i);
+        });
+        newElement.appendChild(newContent);
+        newElement.appendChild(newDeleteButton);
+        todoListDiv.appendChild(newElement);
     }
-}
+};
 
 setInterval(updateTodoList, 1000);
 
@@ -100,12 +89,13 @@ let deleteTodo = function (index) {
     updateJSONbin();
 }
 
-let addTodo = function () {
+let addTodo = async function () {
     //get the elements in the form
     let inputTitle = document.getElementById("inputTitle");
     let inputDescription = document.getElementById("inputDescription");
     let inputPlace = document.getElementById("inputPlace");
     let inputDate = document.getElementById("inputDate");
+
     //get the values from the form
     let newTitle = inputTitle.value;
     let newDescription = inputDescription.value;
@@ -116,13 +106,31 @@ let addTodo = function () {
         title: newTitle,
         description: newDescription,
         place: newPlace,
-        category: '',
+        category: await getArtificialWisdom(newTitle + ": " + newDescription),
         dueDate: newDate
     };
     //add item to the list
     todoList.push(newTodo);
 
-    window.localStorage.setItem("todos", JSON.stringify(todoList));
+    document.getElementById("todoForm").reset();
 
     updateJSONbin();
+}
+
+async function getArtificialWisdom(task) {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'openai/gpt-oss-20b',
+      messages: [{ role: 'user', content: `Please decide about category of task: \"${task}\". Please match language of response to language of task. Answer with minimal quantity of words but preserve meaning, use only name of the category. Do not add excessive punctuation marks.` }],
+    }),
+  });
+  
+  const data = await res.json();
+
+  return data.choices[0].message.content || 'Other';
 }
