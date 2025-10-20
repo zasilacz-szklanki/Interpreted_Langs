@@ -37,13 +37,8 @@ let updateJSONbin = function () {
 
 let updateTodoList = function () {
     let todoListDiv = document.getElementById("todoListView");
+    todoListDiv.innerHTML = ""; 
 
-    //remove all elements
-    while (todoListDiv.firstChild) {
-        todoListDiv.removeChild(todoListDiv.firstChild);
-    }
-
-    //get filter inputs
     let filterInput = document.getElementById("inputSearch").value.toLowerCase().trim();
     let startDateInput = document.getElementById("startDate");
     let endDateInput = document.getElementById("endDate");
@@ -51,7 +46,6 @@ let updateTodoList = function () {
     let startDate = startDateInput.value ? new Date(startDateInput.value) : null;
     let endDate = endDateInput.value ? new Date(endDateInput.value) : null;
 
-    //filter and display
     let filteredTodos = todoList.filter(todo => {
         let matchesText =
             filterInput === "" ||
@@ -66,20 +60,37 @@ let updateTodoList = function () {
         return matchesText && matchesDate;
     });
 
-    for (let i = 0; i < filteredTodos.length; i++) {
-        let newElement = document.createElement("p");
-        let newContent = document.createTextNode(filteredTodos[i].title + " " + filteredTodos[i].description + " " + filteredTodos[i].category);
-        let newDeleteButton = document.createElement("input");
-        newDeleteButton.type = "button";
-        newDeleteButton.value = "x";
-        newDeleteButton.addEventListener("click", function () {
-            deleteTodo(i);
+    filteredTodos.forEach((todo, index) => {
+        let cardCol = document.createElement("div");
+        cardCol.className = "col-12 col-md-6";
+
+        let card = document.createElement("div");
+        card.className = "card shadow-md h-100";
+
+        let cardBody = document.createElement("div");
+        cardBody.className = "card-body";
+
+        cardBody.innerHTML = `
+        <h5 class="card-title">${todo.title}</h5>
+        <p class="card-text">${todo.description}</p>
+        <p class="card-text"><small>Place: ${todo.place || "-"}</small></p>
+        <p class="card-text"><small>Category: ${todo.category || "-"}</small></p>
+        <p class="card-text"><small>Due: ${new Date(todo.dueDate).toLocaleDateString()}</small></p>
+        <button class="btn btn-sm btn-danger">Remove</button>
+    `;
+
+        let deleteBtn = cardBody.querySelector("button");
+        deleteBtn.addEventListener("click", function () {
+            deleteTodo(index);
         });
-        newElement.appendChild(newContent);
-        newElement.appendChild(newDeleteButton);
-        todoListDiv.appendChild(newElement);
-    }
+
+        card.appendChild(cardBody);
+        cardCol.appendChild(card);
+        todoListDiv.appendChild(cardCol);
+    });
+
 };
+
 
 setInterval(updateTodoList, 1000);
 

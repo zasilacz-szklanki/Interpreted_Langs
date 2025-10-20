@@ -1,0 +1,18 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    font-family: Consolas, monospace;
+    background: linear-gradient(135deg, #060a3a, #551583, #b82295);
+    background-attachment: fixed;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+input[type="text"]::placeholder {
+    color: #fff;
+    opacity: 0.5;
+}
