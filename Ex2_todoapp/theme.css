@@ -1,6 +1,6 @@
 body {
     min-height: 100vh;
-    margin: 0;
+    margin: 50px;
     padding: 20px;
     font-family: Consolas, monospace;
     background: linear-gradient(135deg, #060a3a, #551583, #b82295);

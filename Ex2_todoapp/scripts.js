@@ -20,7 +20,7 @@ req.open("GET", `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, true);
 req.setRequestHeader("X-Master-Key", YOUR_API_KEY);
 req.send(JSON.stringify(todoList));
 
-let updateJSONbin = function () {
+function updateJSONbin() {
     let req = new XMLHttpRequest();
 
     req.onreadystatechange = () => {
@@ -35,7 +35,7 @@ let updateJSONbin = function () {
     req.send(JSON.stringify(todoList));
 }
 
-let updateTodoList = function () {
+function updateTodoList() {
     let todoListDiv = document.getElementById("todoListView");
     todoListDiv.innerHTML = ""; 
 
@@ -62,7 +62,7 @@ let updateTodoList = function () {
 
     filteredTodos.forEach((todo, index) => {
         let cardCol = document.createElement("div");
-        cardCol.className = "col-12 col-md-6";
+        cardCol.className = "col-12 col-lg-6";
 
         let card = document.createElement("div");
         card.className = "card shadow-md h-100";
@@ -94,25 +94,23 @@ let updateTodoList = function () {
 
 setInterval(updateTodoList, 1000);
 
-let deleteTodo = function (index) {
+function deleteTodo(index) {
     todoList.splice(index, 1);
 
     updateJSONbin();
 }
 
-let addTodo = async function () {
-    //get the elements in the form
+async function addTodo() {
     let inputTitle = document.getElementById("inputTitle");
     let inputDescription = document.getElementById("inputDescription");
     let inputPlace = document.getElementById("inputPlace");
     let inputDate = document.getElementById("inputDate");
 
-    //get the values from the form
     let newTitle = inputTitle.value;
     let newDescription = inputDescription.value;
     let newPlace = inputPlace.value;
     let newDate = new Date(inputDate.value);
-    //create new item
+
     let newTodo = {
         title: newTitle,
         description: newDescription,
@@ -120,7 +118,7 @@ let addTodo = async function () {
         category: await getArtificialWisdom(newTitle + ": " + newDescription),
         dueDate: newDate
     };
-    //add item to the list
+
     todoList.push(newTodo);
 
     document.getElementById("todoForm").reset();

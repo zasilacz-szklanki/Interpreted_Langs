@@ -14,23 +14,26 @@
 <body>
     <h1 class="mb-5">Just do it!</h1>
 
-    <div class="d-flex gap-2 align-items-center">
-        <label class="form-label mb-0" for="inputSearch">Search</label>
+    <!-- Searching -->
+    <div class="d-flex gap-3 align-items-center flex-wrap flex-lg-nowrap w-75">
+        <label for="inputSearch">Search</label>
         <input type="text" id="inputSearch" class="form-control border-light bg-transparent text-white"
             placeholder="Type your search..." />
     
-        <label class="form-label mb-0" for="startDate">From</label>
+        <label for="startDate">From</label>
         <input type="date" id="startDate" class="form-control border-light bg-transparent text-white" />
     
-        <label class="form-label mb-0" for="endDate">To</label>
+        <label for="endDate">To</label>
         <input type="date" id="endDate" class="form-control border-light bg-transparent text-white" />
     </div>
 
-    <div id="todoListView" class="row my-3 g-3"></div>
+    <!-- Tasks -->
+    <div id="todoListView" class="row my-5 g-3 w-75"></div>
 
-    <form id="todoForm" class="d-flex flex-column gap-2 justify-content-center flex-wrap w-75">
+    <!-- New task adding -->
+    <form id="todoForm" class="d-flex flex-column gap-3 justify-content-center w-75">
         <div class="d-flex gap-2 align-items-center gap-3">
-            <label class="form-label mb-0">Title</label>
+            <label>Title</label>
             <input type="text" id="inputTitle" class="form-control border-light bg-transparent text-white" />
         </div>
         <div class="d-flex gap-2 align-items-center gap-3">
