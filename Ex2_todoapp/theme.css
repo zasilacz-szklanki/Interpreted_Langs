@@ -3,7 +3,7 @@ body {
     margin: 50px;
     padding: 20px;
     font-family: Consolas, monospace;
-    background: linear-gradient(135deg, #060a3a, #551583, #b82295);
+    background: linear-gradient(135deg, #0d082a, #1c1352, #5944cc);
     background-attachment: fixed;
     color: white;
     display: flex;

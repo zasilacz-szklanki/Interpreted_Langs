@@ -65,7 +65,7 @@ function updateTodoList() {
         cardCol.className = "col-12 col-lg-6";
 
         let card = document.createElement("div");
-        card.className = "card shadow-md h-100";
+        card.className = "card shadow h-100";
 
         let cardBody = document.createElement("div");
         cardBody.className = "card-body";
@@ -81,7 +81,7 @@ function updateTodoList() {
 
         let deleteBtn = cardBody.querySelector("button");
         deleteBtn.addEventListener("click", function () {
-            deleteTodo(index);
+            deleteTodo(todo);
         });
 
         card.appendChild(cardBody);
@@ -94,9 +94,11 @@ function updateTodoList() {
 
 setInterval(updateTodoList, 1000);
 
-function deleteTodo(index) {
-    todoList.splice(index, 1);
+function deleteTodo(todoToRemove) {
 
+    const index = todoList.indexOf(todoToRemove);
+
+    todoList.splice(index, 1);
     updateJSONbin();
 }
 
