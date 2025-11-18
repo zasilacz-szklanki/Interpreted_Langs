@@ -47,6 +47,7 @@ model OrderItem {
   orderId   Int
   productId Int
   quantity  Int     @default(1)
+  unitPrice Float
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
 
