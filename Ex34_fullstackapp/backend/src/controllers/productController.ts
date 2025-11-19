@@ -1,5 +1,6 @@
 import prisma from "../prisma/client";
 import { RequestHandler } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 // getProducts
 export const getProducts: RequestHandler = async (req, res) => {
@@ -7,10 +8,10 @@ export const getProducts: RequestHandler = async (req, res) => {
         const products = await prisma.product.findMany({
             include: { category: true }
         });
-        res.status(200).json({ data: products });
+        res.status(StatusCodes.OK).json({ data: products });
     } catch (e) {
         console.log(e);
-        res.status(500).json({ error: e });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
 
@@ -18,15 +19,26 @@ export const getProducts: RequestHandler = async (req, res) => {
 export const getProductById: RequestHandler = async (req, res) => {
     const { id } = req.params;
 
+    if (isNaN(Number(id))) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid product ID format' });
+        return;
+    }
+
     try {
         const product = await prisma.product.findUnique({
             where: { id: Number(id) },
             include: { category: true }
         });
-        res.status(200).json({ data: product });
+
+        if (!product) {
+            res.status(StatusCodes.NOT_FOUND).json({ error: 'Product does not exist' });
+            return;
+        }
+
+        res.status(StatusCodes.OK).json({ data: product });
     } catch (e) {
         console.log(e);
-        res.status(500).json({ error: e });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
 
@@ -34,7 +46,39 @@ export const getProductById: RequestHandler = async (req, res) => {
 export const addProduct: RequestHandler = async (req, res) => {
     const { name, description, unitPrice, unitWeight, categoryId } = req.body;
 
+    if (!name || name.trim() === '') {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Product name is required' });
+        return;
+    }
+    if (!description || description.trim() === '') {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Product description is required' });
+        return;
+    }
+
+    const price = Number(unitPrice);
+    const weight = Number(unitWeight);
+    const catId = Number(categoryId);
+
+    if (isNaN(price) || price <= 0) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Price must be a number greater than 0' });
+        return;
+    }
+    if (isNaN(weight) || weight <= 0) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Weight must be a number greater than 0' });
+        return;
+    }
+    if (isNaN(catId)) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Category ID must be a valid number' });
+        return;
+    }
+
     try {
+        const categoryExists = await prisma.category.findUnique({ where: { id: catId } });
+        if (!categoryExists) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Selected category does not exist' });
+            return;
+        }
+
         const newProduct = await prisma.product.create({
             data: {
                 name,
@@ -44,10 +88,10 @@ export const addProduct: RequestHandler = async (req, res) => {
                 categoryId: Number(categoryId)
             },
         });
-        res.status(201).json({ data: newProduct });
+        res.status(StatusCodes.CREATED).json({ data: newProduct });
     } catch (e) {
         console.log(e);
-        res.status(500).json({ error: e });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to create product' });
     }
 }
 
@@ -56,20 +100,56 @@ export const editProduct: RequestHandler = async (req, res) => {
     const productId = req.params.id;
     const { name, description, unitPrice, unitWeight, categoryId } = req.body;
 
+    if (isNaN(Number(productId))) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid product ID format' });
+        return;
+    }
+
     try {
+        const existingProduct = await prisma.product.findUnique({ where: { id: Number(productId) } });
+        if (!existingProduct) {
+            res.status(StatusCodes.NOT_FOUND).json({ error: 'Product not found' });
+            return;
+        }
+
+        if (name !== undefined && name.trim() === '') {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Product name cannot be empty' });
+            return;
+        }
+        if (description !== undefined && description.trim() === '') {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Product description cannot be empty' });
+            return;
+        }
+        if (unitPrice !== undefined && (isNaN(Number(unitPrice)) || Number(unitPrice) <= 0)) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Price must be a number greater than 0' });
+            return;
+        }
+        if (unitWeight !== undefined && (isNaN(Number(unitWeight)) || Number(unitWeight) <= 0)) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Weight must be a number greater than 0' });
+            return;
+        }
+
+        if (categoryId !== undefined) {
+            const categoryExists = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
+            if (!categoryExists) {
+                res.status(StatusCodes.BAD_REQUEST).json({ error: 'Selected category does not exist' });
+                return;
+            }
+        }
+
         const product = await prisma.product.update({
             where: { id: Number(productId) },
             data: {
                 name,
                 description,
-                unitPrice: Number(unitPrice),
-                unitWeight: Number(unitWeight),
-                categoryId: Number(categoryId)
+                unitPrice: unitPrice !== undefined ? Number(unitPrice) : undefined,
+                unitWeight: unitWeight !== undefined ? Number(unitWeight) : undefined,
+                categoryId: categoryId !== undefined ? Number(categoryId) : undefined
             },
         });
-        res.status(200).json({ data: product });
+        res.status(StatusCodes.OK).json({ data: product });
     } catch (e) {
         console.log(e);
-        res.status(500).json({ error: e });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to edit product' });
     }
 }

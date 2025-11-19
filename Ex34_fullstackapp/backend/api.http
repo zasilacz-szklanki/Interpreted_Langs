@@ -1,0 +1,86 @@
+### ==================================================================
+### CATEGORIES
+### ==================================================================
+
+### Get all categories
+GET http://localhost:3000/categories
+
+### ==================================================================
+### ORDER STATUSES
+### ==================================================================
+
+### Get all order statuses
+GET http://localhost:3000/statuses
+
+### ==================================================================
+### PRODUCTS
+### ==================================================================
+
+### Get all products
+GET http://localhost:3000/products
+
+### Get product by ID
+GET http://localhost:3000/products/1
+
+### Add new product
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+  "name": "Gaming Laptop",
+  "description": "High performance laptop",
+  "unitPrice": 1500.00,
+  "unitWeight": 2.5,
+  "categoryId": 1
+}
+
+### Edit product (Full update)
+PUT http://localhost:3000/products/1
+Content-Type: application/json
+
+{
+  "name": "Office Laptop",
+  "description": "Good for work",
+  "unitPrice": 800.00,
+  "unitWeight": 1.8,
+  "categoryId": 1
+}
+
+### ==================================================================
+### ORDERS
+### ==================================================================
+
+### Get all orders
+GET http://localhost:3000/orders
+
+### Create new order
+POST http://localhost:3000/orders
+Content-Type: application/json
+
+{
+  "customerName": "John Doe",
+  "customerEmail": "john@example.com",
+  "customerPhone": "123456789",
+  "statusId": 1,
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1
+    },
+    {
+      "productId": 2,
+      "quantity": 2
+    }
+  ]
+}
+
+### Update order status (e.g., Change to APPROVED - ID: 2)
+PATCH http://localhost:3000/orders/1
+Content-Type: application/json
+
+{
+  "statusId": 2
+}
+
+### Get orders by Status ID (e.g., NOT_APPROVED - ID: 1)
+GET http://localhost:3000/orders/status/1
