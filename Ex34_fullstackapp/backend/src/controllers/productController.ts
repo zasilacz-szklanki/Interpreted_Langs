@@ -175,12 +175,25 @@ export const getSeoDescription: RequestHandler = async (req, res) => {
             return;
         }
 
-        const prompt = ``;
+        const prompt = `
+            You are an expert SEO copywriter.
+            Create a persuasive and engaging product description in HTML format.
+            Use only the following tags: <p>, <ul>, <li>, <strong>, <h2>.
+            Do not include Markdown formatting (like \`\`\`html). Return ONLY raw HTML code.
+
+            Product Details:
+            Name: ${product.name}
+            Category: ${product.category.name}
+            Price: ${product.unitPrice}
+            Technical Description: ${product.description}
+
+            The description should optimize for SEO keywords related to the category "${product.category.name}" and encourage the user to buy.
+        `;
 
         const response = await axios.post(
             'https://api.groq.com/openai/v1/chat/completions',
             {
-                model: "llama3-8b-8192",
+                model: "llama-3.3-70b-versatile",
                 messages: [
                     { role: "user", content: prompt }
                 ],

@@ -39,8 +39,8 @@ PUT http://localhost:3000/products/1
 Content-Type: application/json
 
 {
-  "name": "Office Laptop",
-  "description": "Good for work",
+  "name": "Gaming Laptop",
+  "description": "Chip i7, 16GB RAM, RTX 3060",
   "unitPrice": 800.00,
   "unitWeight": 1.8,
   "categoryId": 1

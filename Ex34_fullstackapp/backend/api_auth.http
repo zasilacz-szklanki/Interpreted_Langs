@@ -1,0 +1,57 @@
+### ==================================================================
+### AUTHENTICATION
+### ==================================================================
+
+### 1. Rejestracja Pracownika (Jednorazowo)
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "admin@sklep.pl",
+  "password": "tajnehaslo123",
+  "role": "EMPLOYEE"
+}
+
+### 2. Logowanie (Pobranie tokenów)
+# Skopiuj "accessToken" z odpowiedzi!
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@sklep.pl",
+  "password": "tajnehaslo123"
+}
+
+### 3. Odświeżanie tokenu (Gdy Access wygaśnie)
+# Użyj "refreshToken" z odpowiedzi logowania
+POST http://localhost:3000/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY0MTk5MzY1LCJleHAiOjE3NjQ4MDQxNjV9.RAA8Y6E1eAle9hPfJbOfXtSjGdjwxwSqP-n1ODIxZeI"
+}
+
+### ==================================================================
+### PROTECTED ROUTES (Wymagają tokena)
+### ==================================================================
+
+### Próba dodania produktu BEZ tokena (Powinien być błąd 401)
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{ "name": "Test", "unitPrice": 10, "categoryId": 1 }
+
+
+### Dodanie produktu Z TOKENEM (Powinno zadziałać)
+# Zastąp 'TU_WKLEJ_TOKEN' tym, co dostałeś przy logowaniu
+POST http://localhost:3000/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkVNUExPWUVFIiwiaWF0IjoxNzY0MTk5MzY1LCJleHAiOjE3NjQyMDI5NjV9.oj6Ad8v4-gc9erwN4sK_UASksPtOWQlSFMatNYukvBc
+
+{
+  "name": "Chroniony Produkt",
+  "description": "Widoczny tylko dla zalogowanych",
+  "unitPrice": 999.00,
+  "unitWeight": 1.0,
+  "categoryId": 1
+}

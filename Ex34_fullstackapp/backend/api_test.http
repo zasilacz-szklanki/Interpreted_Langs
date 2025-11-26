@@ -171,3 +171,6 @@ PATCH http://localhost:3000/orders/3
 Content-Type: application/json
 
 { "statusId": 4 }
+
+### Pobierz opis SEO wygenerowany przez AI
+GET http://localhost:3000/products/1/seo-description
