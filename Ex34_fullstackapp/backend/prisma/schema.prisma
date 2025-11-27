@@ -40,6 +40,7 @@ model Order {
   customerPhone String
   orderItems    OrderItem[]
   createdAt     DateTime    @default(now())
+  opinion       Opinion?
 }
 
 model OrderItem {
@@ -64,5 +65,14 @@ model User {
   email     String   @unique
   password  String
   role      Role     @default(CLIENT)
+  createdAt DateTime @default(now())
+}
+
+model Opinion {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  content   String
+  orderId   Int      @unique
+  order     Order    @relation(fields: [orderId], references: [id])
   createdAt DateTime @default(now())
 }

@@ -194,8 +194,8 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "klient@sklep.pl",
-  "password": "haslo123"
+  "email": "admin@sklep.pl",
+  "password": "tajnehaslo123"
 }
 
 ### 3. Próba inicjalizacji przez KLIENTA (Oczekiwane: 403 Forbidden)
@@ -224,3 +224,73 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkVNUExPWUVFIiwiaWF0IjoxNzY0MjAyNTA0LCJleHAiOjE3NjQyMDYxMDR9.4hUcLH0Np2558ZhJSNhuFn_lwUz54WmncKCINycoPT4
 
 [ { "name": "Legalny Towar", "description": "Test", "unitPrice": 100, "unitWeight": 1, "categoryId": 1 } ]
+
+### ==================================================================
+### TESTY OPINII (REVIEWS)
+### ==================================================================
+
+### SETUP 1: Zaloguj się jako KLIENT (Jan)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "klient@sklep.pl",
+  "password": "haslo123"
+}
+
+### SETUP 2: Utwórz zamówienie jako Jan
+POST http://localhost:3000/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMzU5NCwiZXhwIjoxNzY0MjA3MTk0fQ.dyawnItjXIlDz8tXaek3ol_fZL6S_mmTP_F11bz4aSY
+
+{
+  "customerName": "Jan Kowalski",
+  "customerEmail": "klient@sklep.pl",
+  "customerPhone": "123456789",
+  "statusId": 1,
+  "items": [ { "productId": 1, "quantity": 1 } ]
+}
+
+
+### 1. ✅ SUKCES: Dodanie opinii (Jako Jan, do zamówienia COMPLETED)
+POST http://localhost:3000/orders/1/opinions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMzU5NCwiZXhwIjoxNzY0MjA3MTk0fQ.dyawnItjXIlDz8tXaek3ol_fZL6S_mmTP_F11bz4aSY
+
+{
+  "rating": 5,
+  "content": "Szybka wysyłka, polecam!"
+}
+
+
+### 2. ❌ BŁĄD: Druga opinia do tego samego zamówienia (Oczekiwane: 400)
+POST http://localhost:3000/orders/1/opinions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMzU5NCwiZXhwIjoxNzY0MjA3MTk0fQ.dyawnItjXIlDz8tXaek3ol_fZL6S_mmTP_F11bz4aSY
+
+{
+  "rating": 1,
+  "content": "Zmienilem zdanie"
+}
+
+
+### 3. ❌ BŁĄD: Ocena zamówienia w złym statusie
+POST http://localhost:3000/orders/2/opinions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMzU5NCwiZXhwIjoxNzY0MjA3MTk0fQ.dyawnItjXIlDz8tXaek3ol_fZL6S_mmTP_F11bz4aSY
+
+{
+  "rating": 5,
+  "content": "Jeszcze nie dostałem ale już oceniam"
+}
+
+
+### 4. ❌ BŁĄD: Ocena CUDZEGO zamówienia
+POST http://localhost:3000/orders/1/opinions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkVNUExPWUVFIiwiaWF0IjoxNzY0MjAzOTQyLCJleHAiOjE3NjQyMDc1NDJ9.317E9eM0MNNX2cfp8rWkjo8s-2IVSdMBnWB_6OJcIUQ
+
+{
+  "rating": 1,
+  "content": "Hakuje opinie!"
+}

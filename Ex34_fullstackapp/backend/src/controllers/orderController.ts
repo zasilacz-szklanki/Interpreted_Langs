@@ -1,12 +1,13 @@
 import prisma from '../prisma/client';
 import { RequestHandler } from 'express';
 import { StatusCodes } from "http-status-codes";
+import { AuthRequest } from '../middlewares/authMiddleware';
 
 const STATUS_RANK: Record<string, number> = {
     'NOT_APPROVED': 1,
     'APPROVED': 2,
     'COMPLETED': 3,
-    'CANCELLED': 99
+    'CANCELLED': 4
 };
 
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -199,5 +200,71 @@ export const getOrdersByStatus: RequestHandler = async (req, res) => {
     } catch (e) {
         console.log(e);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
+}
+
+// addOrderOpinion
+export const addOrderOpinion: RequestHandler = async (req: AuthRequest, res) => {
+    const { id } = req.params;
+    const { rating, content } = req.body;
+
+    if (isNaN(Number(rating)) || rating < 1 || rating > 5) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Rating must be an integer between 1 and 5' });
+        return;
+    }
+    if (!content || content.trim() === '') {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Opinion content is required' });
+        return;
+    }
+
+    try {
+        const order = await prisma.order.findUnique({
+            where: { id: Number(id) },
+            include: {
+                status: true,
+                opinion: true
+            }
+        });
+
+        if (!order) {
+            res.status(StatusCodes.NOT_FOUND).json({ error: 'Order not found' });
+            return;
+        }
+
+        const loggedUser = await prisma.user.findUnique({
+            where: { id: req.user.id }
+        });
+
+        if (!loggedUser || loggedUser.email !== order.customerEmail) {
+            res.status(StatusCodes.FORBIDDEN).json({ error: 'You can only review your own orders' });
+            return;
+        }
+
+        const allowedStatuses = ['COMPLETED', 'CANCELLED'];
+        if (!allowedStatuses.includes(order.status.name)) {
+            res.status(StatusCodes.BAD_REQUEST).json({
+                error: 'You can only review orders that are COMPLETED or CANCELLED'
+            });
+            return;
+        }
+
+        if (order.opinion) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Order already has an opinion' });
+            return;
+        }
+
+        const newOpinion = await prisma.opinion.create({
+            data: {
+                rating: Number(rating),
+                content: content,
+                orderId: order.id
+            }
+        });
+
+        res.status(StatusCodes.CREATED).json({ data: newOpinion });
+
+    } catch (e) {
+        console.log(e);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to add opinion' });
     }
 }
