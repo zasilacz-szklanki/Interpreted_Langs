@@ -221,3 +221,53 @@ export const getSeoDescription: RequestHandler = async (req, res) => {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to generate SEO description' });
     }
 }
+
+// initProducts
+export const initializeProducts: RequestHandler = async (req, res) => {
+    const products = req.body;
+
+    if (!Array.isArray(products) || products.length === 0) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: 'Input data must be a non-empty array of products' });
+        return;
+    }
+
+    try {
+        const productsCount = await prisma.product.count();
+
+        if (productsCount > 0) {
+            res.status(StatusCodes.CONFLICT).json({ error: 'Database is already initialized. Cannot import products.' });
+            return;
+        }
+
+        const formattedProducts = products.map((p: any) => ({
+            name: p.name,
+            description: p.description,
+            unitPrice: Number(p.unitPrice),
+            unitWeight: Number(p.unitWeight),
+            categoryId: Number(p.categoryId)
+        }));
+
+        const hasInvalidData = formattedProducts.some((p: any) =>
+            isNaN(p.unitPrice) || isNaN(p.unitWeight) || isNaN(p.categoryId) || !p.name
+        );
+
+        if (hasInvalidData) {
+            res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid data format in one or more products' });
+            return;
+        }
+
+        const result = await prisma.product.createMany({
+            data: formattedProducts,
+            skipDuplicates: true // to consider
+        });
+
+        res.status(StatusCodes.OK).json({
+            message: 'Database initialized successfully',
+            count: result.count
+        });
+
+    } catch (e) {
+        console.log(e);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to initialize database (check category IDs)' });
+    }
+}

@@ -174,3 +174,53 @@ Content-Type: application/json
 
 ### Pobierz opis SEO wygenerowany przez AI
 GET http://localhost:3000/products/1/seo-description
+
+### ==================================================================
+### TESTY UPRAWNIEŃ (RBAC)
+### ==================================================================
+
+### 1. Rejestracja ZWYKŁEGO KLIENTA
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "klient@sklep.pl",
+  "password": "haslo123",
+  "role": "CLIENT"
+}
+
+### 2. Logowanie KLIENTA (Pobierz token!)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "klient@sklep.pl",
+  "password": "haslo123"
+}
+
+### 3. Próba inicjalizacji przez KLIENTA (Oczekiwane: 403 Forbidden)
+# Wklej token klienta!
+POST http://localhost:3000/init
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMjQ0NiwiZXhwIjoxNzY0MjA2MDQ2fQ.eq3n27-Kdk-YwOEql9V8D3Eyuz5IKyCTxI8HOJd-t0U
+
+[ { "name": "Hacker Item", "unitPrice": 1, "categoryId": 1 } ]
+
+
+### 4. Logowanie PRACOWNIKA (Admina)
+# (Zakładam, że zarejestrowałeś go wcześniej jako EMPLOYEE)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@sklep.pl",
+  "password": "tajnehaslo123"
+}
+
+### 5. Próba inicjalizacji przez PRACOWNIKA (Oczekiwane: 200 OK lub 409 Conflict)
+# Wklej token pracownika!
+POST http://localhost:3000/init
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkVNUExPWUVFIiwiaWF0IjoxNzY0MjAyNTA0LCJleHAiOjE3NjQyMDYxMDR9.4hUcLH0Np2558ZhJSNhuFn_lwUz54WmncKCINycoPT4
+
+[ { "name": "Legalny Towar", "description": "Test", "unitPrice": 100, "unitWeight": 1, "categoryId": 1 } ]
