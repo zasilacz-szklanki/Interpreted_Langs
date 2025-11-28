@@ -29,6 +29,6 @@
     // Other
     "resolveJsonModule": true
   },
-  "include": ["src"],
+  "include": ["src", "../frontend/src/providers"],
   "exclude": ["node_modules"]
 }

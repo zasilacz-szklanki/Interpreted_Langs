@@ -1,7 +1,8 @@
-import { ProductAPI } from "@/lib/api";
-import { Product } from "@/lib/types";
+import { ProductAPI, CategoryAPI } from "@/lib/api";
+import { Product, Category } from "@/lib/types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AdminActions from "@/components/AdminActions";
 
 interface ProductPageProps {
     params: {
@@ -9,26 +10,34 @@ interface ProductPageProps {
     };
 }
 
-async function getProduct(id: string): Promise<Product | null> {
+async function getData(id: string): Promise<{ product: Product | null, categories: Category[] }> {
     try {
-        const response = await ProductAPI.getOne(id);
-        return response.data.data;
+        const [productRes, categoriesRes] = await Promise.all([
+            ProductAPI.getOne(id),
+            CategoryAPI.getAll()
+        ]);
+
+        return {
+            product: productRes.data.data,
+            categories: categoriesRes.data.data
+        };
     } catch (error) {
-        return null;
+        console.error(error);
+        return { product: null, categories: [] };
     }
 }
 
 export default async function ProductDetailsPage({ params }: ProductPageProps) {
     const { id } = await params;
 
-    const product = await getProduct(id);
+    const { product, categories } = await getData(id);
 
     if (!product) {
         notFound();
     }
 
     return (
-        <div className="max-w-5xl mx-auto space-y-8 min-h-[calc(100vh-5rem)] pt-10">
+        <div className="max-w-5xl mx-auto space-y-8 py-10">
             <Link href="/products" className="text-sm text-gray-400 hover:text-primary transition-colors">
                 &larr; Back to product list
             </Link>
@@ -49,9 +58,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                         {product.unitPrice.toFixed(2)} PLN
                     </div>
 
-                    <div className="prose prose-invert text-gray-400 leading-relaxed">
-                        <p>{product.description || "Brak opisu dla tego produktu."}</p>
-                    </div>
+                    <AdminActions product={product} categories={categories} />
 
                     <div className="flex flex-col gap-2 pt-4 border-t border-border">
                         <div className="text-sm text-gray-500">
@@ -64,6 +71,17 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                             Add to cart
                         </button>
                     </div>
+                </div>
+
+                <div className="col-span-1 md:col-span-2 mt-8 pt-8 border-t border-border">
+                    <h2 className="text-xl font-bold text-foreground mb-4">Product Description</h2>
+
+                    <div
+                        className="prose prose-invert text-gray-400 max-w-none leading-relaxed 
+                                   prose-headings:text-foreground prose-headings:font-bold prose-headings:mt-6 prose-headings:mb-4
+                                   prose-p:mb-4 prose-ul:list-disc prose-ul:pl-5 prose-li:mb-2 prose-strong:text-primary"
+                        dangerouslySetInnerHTML={{ __html: product.description || "<p>No description available.</p>" }}
+                    />
                 </div>
             </div>
         </div>
