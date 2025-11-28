@@ -4,7 +4,7 @@
 
 ### 1. Próba dodania produktu z PUSTĄ nazwą i opisem
 # Oczekiwany: 400 Bad Request ("Product name is required")
-POST http://localhost:3000/products
+POST http://localhost:3001/products
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 
 ### 2. Próba dodania produktu z UJEMNĄ ceną lub ZEROWĄ wagą
 # Oczekiwany: 400 Bad Request ("Price must be a number greater than 0")
-POST http://localhost:3000/products
+POST http://localhost:3001/products
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 ### 3. Próba edycji produktu na NIEWŁAŚCIWE wartości (ujemna cena)
 # Oczekiwany: 400 Bad Request ("Price must be a number greater than 0")
 # (Upewnij się, że produkt o ID 1 istnieje)
-PUT http://localhost:3000/products/1
+PUT http://localhost:3001/products/1
 Content-Type: application/json
 
 {
@@ -40,7 +40,7 @@ Content-Type: application/json
 
 ### 4. Próba edycji NIEISTNIEJĄCEGO produktu
 # Oczekiwany: 404 Not Found ("Product not found")
-PUT http://localhost:3000/products/999999
+PUT http://localhost:3001/products/999999
 Content-Type: application/json
 
 {
@@ -54,7 +54,7 @@ Content-Type: application/json
 
 ### 5. Próba zamówienia z PUSTYMI danymi klienta
 # Oczekiwany: 400 Bad Request ("Customer name is required")
-POST http://localhost:3000/orders
+POST http://localhost:3001/orders
 Content-Type: application/json
 
 {
@@ -67,7 +67,7 @@ Content-Type: application/json
 
 ### 6. Próba zamówienia z BŁĘDNYM TELEFONEM (litery)
 # Oczekiwany: 400 Bad Request ("Invalid phone number format")
-POST http://localhost:3000/orders
+POST http://localhost:3001/orders
 Content-Type: application/json
 
 {
@@ -80,7 +80,7 @@ Content-Type: application/json
 
 ### 7. Próba zamówienia z BŁĘDNYM EMAILEM
 # Oczekiwany: 400 Bad Request ("Invalid email format")
-POST http://localhost:3000/orders
+POST http://localhost:3001/orders
 Content-Type: application/json
 
 {
@@ -93,7 +93,7 @@ Content-Type: application/json
 
 ### 8. Próba zamówienia NIEISTNIEJĄCYCH produktów
 # Oczekiwany: 400 Bad Request ("One or more products do not exist...")
-POST http://localhost:3000/orders
+POST http://localhost:3001/orders
 Content-Type: application/json
 
 {
@@ -108,7 +108,7 @@ Content-Type: application/json
 
 ### 9. Próba zamówienia z UJEMNĄ lub ZEROWĄ ilością
 # Oczekiwany: 400 Bad Request ("Quantity... must be greater than 0")
-POST http://localhost:3000/orders
+POST http://localhost:3001/orders
 Content-Type: application/json
 
 {
@@ -129,7 +129,7 @@ Content-Type: application/json
 
 ### SETUP: Utwórzmy zamówienie testowe, żeby mieć na czym pracować
 # Zanotuj ID, które dostaniesz (np. ID: 50)
-POST http://localhost:3000/orders
+POST http://localhost:3001/orders
 Content-Type: application/json
 
 {
@@ -142,7 +142,7 @@ Content-Type: application/json
 
 ### 10. Próba zmiany statusu NIEISTNIEJĄCEGO zamówienia
 # Oczekiwany: 404 Not Found ("Order not found")
-PATCH http://localhost:3000/orders/999999
+PATCH http://localhost:3001/orders/999999
 Content-Type: application/json
 
 { "statusId": 2 }
@@ -150,7 +150,7 @@ Content-Type: application/json
 ### 11. Próba COFNIĘCIA statusu (np. z ZATWIERDZONE na NIEZATWIERDZONE)
 # Użyj ID z SETUPu wyżej (np. 50). Próbujemy zmienić z 2 na 1.
 # Oczekiwany: 400 Bad Request ("Cannot revert status from APPROVED to NOT_APPROVED")
-PATCH http://localhost:3000/orders/3
+PATCH http://localhost:3001/orders/3
 Content-Type: application/json
 
 { "statusId": 1 }
@@ -159,7 +159,7 @@ Content-Type: application/json
 ### Anulowanie zamówienia
 # Krok A: Najpierw anulujmy zamówienie (To powinno się udać - 200 OK)
 # Status 99 = CANCELLED
-PATCH http://localhost:3000/orders/3
+PATCH http://localhost:3001/orders/3
 Content-Type: application/json
 
 { "statusId": 3 }
@@ -167,20 +167,20 @@ Content-Type: application/json
 ### 12. Próba edycji ANULOWANEGO zamówienia
 # Krok B: Teraz spróbujmy zmienić status anulowanego zamówienia na ZREALIZOWANE (3)
 # Oczekiwany: 409 Conflict lub 400 ("Cannot modify a cancelled order")
-PATCH http://localhost:3000/orders/3
+PATCH http://localhost:3001/orders/3
 Content-Type: application/json
 
 { "statusId": 4 }
 
 ### Pobierz opis SEO wygenerowany przez AI
-GET http://localhost:3000/products/1/seo-description
+GET http://localhost:3001/products/1/seo-description
 
 ### ==================================================================
 ### TESTY UPRAWNIEŃ (RBAC)
 ### ==================================================================
 
 ### 1. Rejestracja ZWYKŁEGO KLIENTA
-POST http://localhost:3000/auth/register
+POST http://localhost:3001/auth/register
 Content-Type: application/json
 
 {
@@ -190,7 +190,7 @@ Content-Type: application/json
 }
 
 ### 2. Logowanie KLIENTA (Pobierz token!)
-POST http://localhost:3000/auth/login
+POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
@@ -200,7 +200,7 @@ Content-Type: application/json
 
 ### 3. Próba inicjalizacji przez KLIENTA (Oczekiwane: 403 Forbidden)
 # Wklej token klienta!
-POST http://localhost:3000/init
+POST http://localhost:3001/init
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMjQ0NiwiZXhwIjoxNzY0MjA2MDQ2fQ.eq3n27-Kdk-YwOEql9V8D3Eyuz5IKyCTxI8HOJd-t0U
 
@@ -209,7 +209,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6I
 
 ### 4. Logowanie PRACOWNIKA (Admina)
 # (Zakładam, że zarejestrowałeś go wcześniej jako EMPLOYEE)
-POST http://localhost:3000/auth/login
+POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
@@ -219,7 +219,7 @@ Content-Type: application/json
 
 ### 5. Próba inicjalizacji przez PRACOWNIKA (Oczekiwane: 200 OK lub 409 Conflict)
 # Wklej token pracownika!
-POST http://localhost:3000/init
+POST http://localhost:3001/init
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkVNUExPWUVFIiwiaWF0IjoxNzY0MjAyNTA0LCJleHAiOjE3NjQyMDYxMDR9.4hUcLH0Np2558ZhJSNhuFn_lwUz54WmncKCINycoPT4
 
@@ -230,7 +230,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
 ### ==================================================================
 
 ### SETUP 1: Zaloguj się jako KLIENT (Jan)
-POST http://localhost:3000/auth/login
+POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
@@ -239,7 +239,7 @@ Content-Type: application/json
 }
 
 ### SETUP 2: Utwórz zamówienie jako Jan
-POST http://localhost:3000/orders
+POST http://localhost:3001/orders
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMzU5NCwiZXhwIjoxNzY0MjA3MTk0fQ.dyawnItjXIlDz8tXaek3ol_fZL6S_mmTP_F11bz4aSY
 
@@ -253,7 +253,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6I
 
 
 ### 1. ✅ SUKCES: Dodanie opinii (Jako Jan, do zamówienia COMPLETED)
-POST http://localhost:3000/orders/1/opinions
+POST http://localhost:3001/orders/1/opinions
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMzU5NCwiZXhwIjoxNzY0MjA3MTk0fQ.dyawnItjXIlDz8tXaek3ol_fZL6S_mmTP_F11bz4aSY
 
@@ -264,7 +264,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6I
 
 
 ### 2. ❌ BŁĄD: Druga opinia do tego samego zamówienia (Oczekiwane: 400)
-POST http://localhost:3000/orders/1/opinions
+POST http://localhost:3001/orders/1/opinions
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMzU5NCwiZXhwIjoxNzY0MjA3MTk0fQ.dyawnItjXIlDz8tXaek3ol_fZL6S_mmTP_F11bz4aSY
 
@@ -275,7 +275,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6I
 
 
 ### 3. ❌ BŁĄD: Ocena zamówienia w złym statusie
-POST http://localhost:3000/orders/2/opinions
+POST http://localhost:3001/orders/2/opinions
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IkNMSUVOVCIsImlhdCI6MTc2NDIwMzU5NCwiZXhwIjoxNzY0MjA3MTk0fQ.dyawnItjXIlDz8tXaek3ol_fZL6S_mmTP_F11bz4aSY
 
@@ -286,7 +286,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6I
 
 
 ### 4. ❌ BŁĄD: Ocena CUDZEGO zamówienia
-POST http://localhost:3000/orders/1/opinions
+POST http://localhost:3001/orders/1/opinions
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkVNUExPWUVFIiwiaWF0IjoxNzY0MjAzOTQyLCJleHAiOjE3NjQyMDc1NDJ9.317E9eM0MNNX2cfp8rWkjo8s-2IVSdMBnWB_6OJcIUQ
 

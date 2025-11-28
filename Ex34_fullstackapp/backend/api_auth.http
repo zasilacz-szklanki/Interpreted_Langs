@@ -3,7 +3,7 @@
 ### ==================================================================
 
 ### 1. Rejestracja Pracownika (Jednorazowo)
-POST http://localhost:3000/auth/register
+POST http://localhost:3001/auth/register
 Content-Type: application/json
 
 {
@@ -14,7 +14,7 @@ Content-Type: application/json
 
 ### 2. Logowanie (Pobranie tokenów)
 # Skopiuj "accessToken" z odpowiedzi!
-POST http://localhost:3000/auth/login
+POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 ### 3. Odświeżanie tokenu (Gdy Access wygaśnie)
 # Użyj "refreshToken" z odpowiedzi logowania
-POST http://localhost:3000/auth/refresh-token
+POST http://localhost:3001/auth/refresh-token
 Content-Type: application/json
 
 {
@@ -36,7 +36,7 @@ Content-Type: application/json
 ### ==================================================================
 
 ### Próba dodania produktu BEZ tokena (Powinien być błąd 401)
-POST http://localhost:3000/products
+POST http://localhost:3001/products
 Content-Type: application/json
 
 { "name": "Test", "unitPrice": 10, "categoryId": 1 }
@@ -44,14 +44,14 @@ Content-Type: application/json
 
 ### Dodanie produktu Z TOKENEM (Powinno zadziałać)
 # Zastąp 'TU_WKLEJ_TOKEN' tym, co dostałeś przy logowaniu
-POST http://localhost:3000/products
+POST http://localhost:3001/products
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkVNUExPWUVFIiwiaWF0IjoxNzY0MTk5MzY1LCJleHAiOjE3NjQyMDI5NjV9.oj6Ad8v4-gc9erwN4sK_UASksPtOWQlSFMatNYukvBc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkVNUExPWUVFIiwiaWF0IjoxNzY0MzY5Mzk3LCJleHAiOjE3NjQzNzI5OTd9.pSCK2ns8uAkEwpdjAF2h2ctW_cBK4dlrauKo70P8XDU
 
 {
-  "name": "Chroniony Produkt",
-  "description": "Widoczny tylko dla zalogowanych",
-  "unitPrice": 999.00,
-  "unitWeight": 1.0,
-  "categoryId": 1
+  "name": "Shovel",
+  "description": "Just a simple shovel",
+  "unitPrice": 134.99,
+  "unitWeight": 2.00,
+  "categoryId": 4
 }
