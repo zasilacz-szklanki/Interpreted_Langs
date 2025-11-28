@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/auth', authRouter);
-app.use('/products', authenticateToken, productRouter);
+app.use('/products', productRouter);
 app.use('/categories', categoryRouter);
 app.use('/orders', authenticateToken, orderRouter);
 app.use('/status', statusRouter);
