@@ -3,6 +3,7 @@ import { Product, Category } from "@/lib/types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdminActions from "@/components/AdminActions";
+import AddToCartButton from "@/components/AddToCartButton";
 
 interface ProductPageProps {
     params: {
@@ -67,9 +68,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                     </div>
 
                     <div className="flex gap-4 mt-auto pt-6">
-                        <button className="flex-1 bg-primary hover:bg-primary-hover text-white font-semibold py-4 px-6 rounded-lg transition-all hover:shadow-[0_0_20px_-5px_var(--color-primary)]">
-                            Add to cart
-                        </button>
+                        <AddToCartButton product={product} />
                     </div>
                 </div>
 

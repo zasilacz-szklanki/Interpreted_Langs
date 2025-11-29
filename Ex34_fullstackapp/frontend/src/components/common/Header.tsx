@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { FiUser, FiShoppingCart, FiMenu } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/providers/CartProvider";
 
 export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const { cartCount, clearCart } = useCart();
 
     useEffect(() => {
         const checkLoginStatus = () => {
@@ -39,6 +41,7 @@ export default function Header() {
     }, []);
 
     const handleLogout = () => {
+        clearCart();
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         window.dispatchEvent(new Event("auth-change"));
@@ -56,7 +59,7 @@ export default function Header() {
                             <FiShoppingCart size={24} />
                             <span
                                 className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">
-                                0
+                                { cartCount }
                             </span>
                         </Link>
                     )}

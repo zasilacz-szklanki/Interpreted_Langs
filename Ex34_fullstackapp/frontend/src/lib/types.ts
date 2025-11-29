@@ -52,3 +52,17 @@ export interface User {
     email: string;
     role: 'CLIENT' | 'EMPLOYEE';
 }
+
+export interface CartItem {
+    product: Product;
+    quantity: number;
+}
+
+export interface CartContextType {
+    items: CartItem[];
+    addToCart: (product: Product) => void;
+    removeFromCart: (productId: number) => void;
+    clearCart: () => void;
+    cartCount: number;
+    cartTotal: number;
+}
