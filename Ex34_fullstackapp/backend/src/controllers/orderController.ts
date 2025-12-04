@@ -33,6 +33,41 @@ export const getOrders: RequestHandler = async (req, res) => {
     }
 }
 
+// getUserOrders
+export const getUserOrders: RequestHandler = async (req: AuthRequest, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await prisma.user.findUnique({
+            where: { id: Number(userId) },
+            select: { email: true }
+        });
+
+        if (!user) {
+            return res.status(StatusCodes.NOT_FOUND).json({ error: 'User not found' });
+        }
+
+        const orders = await prisma.order.findMany({
+            where: {
+                customerEmail: user.email
+            },
+            include: {
+                orderItems: { include: { product: true } },
+                status: true,
+                opinion: true,
+            },
+            orderBy: { id: 'desc' }
+        });
+
+        res.status(StatusCodes.OK).json({ data: orders });
+
+    } catch (e) {
+        console.error(e);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
+}
+
+
 // createOrder
 export const createOrder: RequestHandler = async (req, res) => {
     const { customerName, customerEmail, customerPhone, statusId, items } = req.body;

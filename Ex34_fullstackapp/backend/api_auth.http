@@ -18,8 +18,8 @@ POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@sklep.pl",
-  "password": "tajnehaslo123"
+  "email": "klient@sklep.pl",
+  "password": "haslo123"
 }
 
 ### 3. Odświeżanie tokenu (Gdy Access wygaśnie)
@@ -55,3 +55,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6I
   "unitWeight": 2.00,
   "categoryId": 4
 }
+
+###
+GET http://localhost:3001/orders/user/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkNMSUVOVCIsImVtYWlsIjoia2xpZW50QHNrbGVwLnBsIiwiaWF0IjoxNzY0ODgxMzAyLCJleHAiOjE3NjQ4ODQ5MDJ9.iwORHmtgmQbgLNh6o1rFT9aUwejigF1_lkzztGCjlR4
+
+###
+GET http://localhost:3001/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkNMSUVOVCIsImVtYWlsIjoia2xpZW50QHNrbGVwLnBsIiwiaWF0IjoxNzY0ODgxMzAyLCJleHAiOjE3NjQ4ODQ5MDJ9.iwORHmtgmQbgLNh6o1rFT9aUwejigF1_lkzztGCjlR4

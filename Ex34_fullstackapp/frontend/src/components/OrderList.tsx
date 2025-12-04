@@ -33,8 +33,6 @@ export default function OrderList({ orders, isAdmin = false, statuses = [], onRe
         }
     };
 
-    console.log(orders);
-
     const getStatusColor = (statusName?: string) => {
         switch (statusName) {
             case 'ZREALIZOWANE': case 'COMPLETED': return 'text-green-500 border-green-500/30 bg-green-500/10';

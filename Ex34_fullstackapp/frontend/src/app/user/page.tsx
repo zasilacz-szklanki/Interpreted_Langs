@@ -24,7 +24,7 @@ export default function UserPage() {
 
         const fetchOrders = async () => {
             try {
-                const response = await OrderAPI.getAll();
+                const response = await OrderAPI.getUserOrders(user.id);
                 const allOrders = response.data.data;
                 setOrders(allOrders);
             } catch (error) {

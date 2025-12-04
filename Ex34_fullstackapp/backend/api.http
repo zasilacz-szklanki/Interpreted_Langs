@@ -84,4 +84,3 @@ Content-Type: application/json
 
 ### Get orders by Status ID (e.g., NOT_APPROVED - ID: 1)
 GET http://localhost:3001/orders/status/1
-

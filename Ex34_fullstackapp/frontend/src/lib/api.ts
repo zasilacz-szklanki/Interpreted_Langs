@@ -97,6 +97,7 @@ export const OrderAPI = {
     updateStatus: (id: number | string, statusId: number) => api.patch(`/orders/${id}`, { statusId }),
     getByStatus: (statusId: number | string) => api.get(`/orders/status/${statusId}`),
     addOpinion: (id: number | string, data: { rating: number; content: string }) => api.post(`/orders/${id}/opinions`, data),
+    getUserOrders: (id: number) => api.get(`/orders/user/${id}`)
 };
 
 export const InitAPI = {

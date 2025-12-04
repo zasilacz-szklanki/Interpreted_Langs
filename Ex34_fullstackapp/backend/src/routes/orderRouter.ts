@@ -5,11 +5,13 @@ import  {
     createOrder,
     updateOrderStatus,
     getOrdersByStatus,
-    addOrderOpinion
+    addOrderOpinion,
+    getUserOrders
 } from "../controllers/orderController";
 
 const orderRouter = Router();
 
+orderRouter.get('/user/:id', getUserOrders);
 orderRouter.get('/', getOrders);
 orderRouter.post('/', createOrder);
 orderRouter.patch('/:id', updateOrderStatus);
