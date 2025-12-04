@@ -48,10 +48,10 @@ export default function ProductsPage() {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 my-5 mx-4">
 
             <div className="flex flex-col gap-6 border-b border-border pb-8">
-                <div>
+                <div className="text-center">
                     <h1 className="text-3xl font-bold tracking-tight text-primary">
                         Product Collection
                     </h1>
