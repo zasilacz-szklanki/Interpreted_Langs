@@ -68,12 +68,11 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
                     </div>
 
                     <div className="flex gap-4 mt-auto pt-6">
-                        <AddToCartButton product={product} />
+                        <AddToCartButton product={product} small={false} />
                     </div>
                 </div>
 
                 <div className="col-span-1 md:col-span-2 mt-8 pt-8 border-t border-border">
-                    <h2 className="text-xl font-bold text-foreground mb-4">Product Description</h2>
 
                     <div
                         className="prose prose-invert text-gray-400 max-w-none leading-relaxed 

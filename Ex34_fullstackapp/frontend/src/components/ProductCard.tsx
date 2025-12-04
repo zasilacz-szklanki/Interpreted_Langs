@@ -34,7 +34,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                     >
                         Details
                     </Link>
-                    <AddToCartButton product={product} />
+                    <AddToCartButton product={product} small={true} />
                 </div>
             </div>
         </div>

@@ -7,8 +7,8 @@ POST http://localhost:3001/auth/register
 Content-Type: application/json
 
 {
-  "email": "admin@sklep.pl",
-  "password": "tajnehaslo123",
+  "email": "admin@admin.com",
+  "password": "haslo123",
   "role": "EMPLOYEE"
 }
 

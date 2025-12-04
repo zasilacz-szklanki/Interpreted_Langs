@@ -43,6 +43,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
         });
     };
 
+    const decreaseQuantity = (productId: number) => {
+        setItems((prevItems) => {
+            return prevItems.map((item) => {
+                if (item.product.id === productId) {
+                    const newQuantity = Math.max(1, item.quantity - 1);
+                    return { ...item, quantity: newQuantity };
+                }
+                return item;
+            });
+        });
+    };
+
     const removeFromCart = (productId: number) => {
         setItems((prevItems) => prevItems.filter((item) => item.product.id !== productId));
     };
@@ -59,6 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             value={{
                 items,
                 addToCart,
+                decreaseQuantity,
                 removeFromCart,
                 clearCart,
                 cartCount,

@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { FiUser, FiShoppingCart, FiMenu } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/providers/CartProvider";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -12,6 +13,7 @@ export default function Header() {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const { cartCount, clearCart } = useCart();
+    const { isEmployee } = useAuth();
 
     useEffect(() => {
         const checkLoginStatus = () => {
@@ -41,6 +43,7 @@ export default function Header() {
     }, []);
 
     const handleLogout = () => {
+        router.push('/');
         clearCart();
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -55,13 +58,19 @@ export default function Header() {
             <div className="px-4 h-16 flex items-center justify-between relative">
                 <div className="flex-1 flex justify-start items-center gap-4">
                     {isLoggedIn && (
-                        <Link href="/cart" className="p-2 hover:text-primary transition-colors relative group">
-                            <FiShoppingCart size={24} />
-                            <span
-                                className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">
-                                { cartCount }
-                            </span>
-                        </Link>
+                        cartCount > 0 ? (
+                            <Link href="/checkout" className="p-2 hover:text-primary transition-colors relative group">
+                                <FiShoppingCart size={24} />
+                                <span
+                                    className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">
+                                    {cartCount}
+                                </span>
+                            </Link>
+                        ) : (
+                            <div className="p-2">
+                                <FiShoppingCart size={24} />
+                            </div>
+                        )
                     )}
                 </div>
 
@@ -78,7 +87,7 @@ export default function Header() {
                             className="p-2 rounded-full hover:bg-utility hover:opacity-80 transition cursor-pointer focus:outline-none"
                             aria-label="Account button"
                         >
-                            <FiUser size={24} className={isLoggedIn ? "text-primary" : "text-foreground"} />
+                            <FiUser size={24} className={isLoggedIn ? (isEmployee ? "text-red-500" : "text-primary") : "text-foreground"} />
                         </button>
 
                         {isDropdownOpen && (
@@ -91,11 +100,11 @@ export default function Header() {
                                     {isLoggedIn ? (
                                         <>
                                             <Link
-                                                href="/profile"
+                                                href={isEmployee ? "/admin" : "/user"}
                                                 className="block px-4 py-2 text-sm hover:bg-utility transition-colors text-foreground"
                                                 onClick={() => setIsDropdownOpen(false)}
                                             >
-                                                Settings
+                                                {isEmployee ? "Admin Panel" : "User Panel"}
                                             </Link>
                                             <button
                                                 onClick={handleLogout}

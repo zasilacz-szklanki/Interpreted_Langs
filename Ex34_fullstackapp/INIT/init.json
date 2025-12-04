@@ -1,0 +1,44 @@
+[
+    {
+        "name": "Sony WH-1000XM5",
+        "description": "Najnowsze słuchawki z redukcją szumów, zapewniające krystalicznie czysty dźwięk i do 30 godzin pracy na baterii. Idealne do podróży i pracy w biurze.",
+        "unitPrice": 1699.00,
+        "unitWeight": 0.25,
+        "categoryId": 1
+    },
+    {
+        "name": "MacBook Air M2",
+        "description": "Ultrabook Apple z procesorem M2. Niezwykle lekki, cichy (bez wentylatora) i wydajny. Wyświetlacz Liquid Retina 13.6 cala.",
+        "unitPrice": 5999.00,
+        "unitWeight": 1.24,
+        "categoryId": 1
+    },
+    {
+        "name": "Czysty Kod - Robert C. Martin",
+        "description": "Podręcznik profesjonalnego programisty. Dowiedz się, jak pisać kod, który jest czytelny, łatwy w utrzymaniu i wolny od błędów.",
+        "unitPrice": 69.90,
+        "unitWeight": 0.8,
+        "categoryId": 2
+    },
+    {
+        "name": "Wiedźmin: Ostatnie Życzenie",
+        "description": "Zbiór opowiadań o Geralcie z Rivii. Klasyka polskiej fantastyki, która zainspirowała gry i seriale.",
+        "unitPrice": 45.00,
+        "unitWeight": 0.4,
+        "categoryId": 2
+    },
+    {
+        "name": "Bluza z kapturem React.js",
+        "description": "Wygodna, czarna bluza z logo React. Wykonana w 100% z bawełny organicznej. Krój unisex.",
+        "unitPrice": 129.99,
+        "unitWeight": 0.5,
+        "categoryId": 3
+    },
+    {
+        "name": "Zestaw narzędzi ogrodowych",
+        "description": "Kompletny zestaw dla ogrodnika: łopatka, grabki, sekator i rękawice. Wykonane ze stali nierdzewnej.",
+        "unitPrice": 89.00,
+        "unitWeight": 1.5,
+        "categoryId": 4
+    }
+]
