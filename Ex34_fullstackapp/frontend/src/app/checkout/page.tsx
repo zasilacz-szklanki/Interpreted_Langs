@@ -1,14 +1,16 @@
 "use client";
 
 import { useCart } from "@/providers/CartProvider";
+import { useAuth } from "@/providers/AuthProvider";
 import { OrderAPI } from "@/lib/api";
 import { useState, useEffect } from "react";
-import { useRouter, notFound } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FiTrash2, FiMinus, FiPlus, FiCheckCircle } from "react-icons/fi";
 
 export default function CheckoutPage() {
     const { items, addToCart, decreaseQuantity, removeFromCart, clearCart, cartTotal } = useCart();
+    const { user, isLoading } = useAuth();
     const router = useRouter();
 
     const [formData, setFormData] = useState({
@@ -26,6 +28,24 @@ export default function CheckoutPage() {
         setIsClient(true);
     }, []);
 
+    useEffect(() => {
+        if (!isLoading && !user) {
+            router.push("/login");
+        } else if (user) {
+            setFormData(prev => ({
+                ...prev,
+                customerEmail: user.email
+            }));
+        }
+    }, [user, isLoading, router]);
+
+    useEffect(() => {
+        if (!isLoading && user && isClient && items.length === 0 && !successId) {
+            router.push("/");
+        }
+    }, [isLoading, user, isClient, items, successId, router]);
+
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -34,15 +54,14 @@ export default function CheckoutPage() {
         e.preventDefault();
         setError(null);
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^[0-9\s+]+$/;
 
         if (!formData.customerName.trim()) {
             setError("Name is required.");
             return;
         }
-        if (!emailRegex.test(formData.customerEmail)) {
-            setError("Invalid email address.");
+        if (!formData.customerEmail) {
+            setError("Email is missing. Please re-login.");
             return;
         }
         if (!phoneRegex.test(formData.customerPhone)) {
@@ -75,11 +94,11 @@ export default function CheckoutPage() {
         }
     };
 
-    if (!isClient) return null;
+    if (!isClient || isLoading || !user) return null;
 
     if (successId) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
                 <div className="text-green-500">
                     <FiCheckCircle size={80} />
                 </div>
@@ -95,10 +114,11 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto my-5">
+        <div className="max-w-6xl mx-auto mt-5">
             <h1 className="text-center text-3xl font-bold mb-8 text-foreground">Checkout</h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
                 <div className="lg:col-span-2 space-y-6">
                     <div className="card p-6 border-border bg-card">
                         <h2 className="text-xl font-semibold mb-4 text-foreground">Your Items</h2>
@@ -158,8 +178,8 @@ export default function CheckoutPage() {
                         <h2 className="text-xl font-semibold mb-6 text-foreground">Contact Details</h2>
 
                         {error && (
-                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded">
-                                {error}
+                            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded flex items-center gap-2">
+                                <span>{error}</span>
                             </div>
                         )}
 
@@ -177,14 +197,13 @@ export default function CheckoutPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">Email (from account)</label>
                                 <input
                                     type="email"
                                     name="customerEmail"
                                     value={formData.customerEmail}
-                                    onChange={handleChange}
-                                    className="w-full px-3 py-2 bg-(--color-input) border border-border rounded focus:ring-2 focus:ring-primary/50 outline-none text-foreground"
-                                    placeholder="walter@white.com"
+                                    readOnly
+                                    className="w-full px-3 py-2 bg-(--color-input)/50 border border-border rounded focus:outline-none text-gray-400 cursor-not-allowed"
                                 />
                             </div>
 
@@ -211,9 +230,13 @@ export default function CheckoutPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full mt-6 bg-primary hover:bg-primary-hover text-white font-semibold py-3 px-4 rounded-lg transition-all hover:shadow-[0_0_20px_-5px_var(--color-primary)] disabled:opacity-50"
+                                className="w-full mt-6 bg-primary hover:bg-primary-hover text-white font-semibold py-3 px-4 rounded-lg transition-all hover:shadow-[0_0_20px_-5px_var(--color-primary)] disabled:opacity-50 flex justify-center items-center gap-2"
                             >
-                                {loading ? "Processing..." : "Confirm Order"}
+                                {loading ? (
+                                    <>Processing...</>
+                                ) : (
+                                    "Confirm Order"
+                                )}
                             </button>
                         </form>
                     </div>

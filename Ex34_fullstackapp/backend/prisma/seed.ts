@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
     const statuses = [
-        'NOT_APPROVED', // NIEZATWIERDZONE
+        'NOT APPROVED', // NIEZATWIERDZONE
         'APPROVED',     // ZATWIERDZONE
         'CANCELLED',    // ANULOWANE
         'COMPLETED'     // ZREALIZOWANE

@@ -37,6 +37,7 @@ export interface Order {
     orderItems?: OrderItem[];
     createdAt: string;
     approvedAt?: string | null;
+    opinion?: Opinion | null;
 }
 
 export interface Opinion {

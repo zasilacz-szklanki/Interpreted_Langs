@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { AuthRequest } from '../middlewares/authMiddleware';
 
 const STATUS_RANK: Record<string, number> = {
-    'NOT_APPROVED': 1,
+    'NOT APPROVED': 1,
     'APPROVED': 2,
     'COMPLETED': 3,
     'CANCELLED': 4
@@ -19,10 +19,12 @@ export const getOrders: RequestHandler = async (req, res) => {
         const orders = await prisma.order.findMany({
             include: {
                 orderItems: {
-                    include: { product: true }
+                    include: { product: true },
                 },
+                opinion: true,
                 status: true,
-            }
+            },
+            orderBy: { id: 'desc' }
         });
         res.status(StatusCodes.OK).json({ data: orders });
     } catch (e) {

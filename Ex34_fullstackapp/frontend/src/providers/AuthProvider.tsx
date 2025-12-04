@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 interface TokenPayload {
     id: number;
     role: "CLIENT" | "EMPLOYEE";
+    email: string;
     exp: number;
 }
 
