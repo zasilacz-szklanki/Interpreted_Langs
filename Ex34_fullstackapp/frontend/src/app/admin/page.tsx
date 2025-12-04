@@ -4,7 +4,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect } from "react";
-import { FiShoppingBag, FiDatabase, FiSettings } from "react-icons/fi";
+import { FiShoppingBag, FiDatabase, FiSettings, FiPlusSquare } from "react-icons/fi";
 
 export default function AdminDashboard() {
     const { isEmployee, isLoading } = useAuth();
@@ -39,6 +39,21 @@ export default function AdminDashboard() {
                         <h2 className="text-xl font-bold text-foreground">Manage Orders</h2>
                         <p className="text-gray-400 mt-2 text-sm">
                             View list of all orders, update statuses and check details.
+                        </p>
+                    </div>
+                </Link>
+
+                <Link
+                    href="/admin/add"
+                    className="card p-8 hover:border-green-500/50 transition-all group flex flex-col items-center text-center gap-4 hover:bg-utility/30"
+                >
+                    <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center text-green-500 group-hover:scale-110 transition-transform">
+                        <FiPlusSquare size={32} />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold text-foreground">Add Product</h2>
+                        <p className="text-gray-400 mt-2 text-sm">
+                            Create a new product manually and add it to the catalog.
                         </p>
                     </div>
                 </Link>
