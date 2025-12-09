@@ -2,9 +2,9 @@
 
 let todoList = [];
 
-const YOUR_API_KEY = "$2a$10$4L4DIXkmhqFOuplpG0v5meSVGNPQQtFq4KAjROORHFduED5MEvo16";
-const BIN_ID = "68f24e4143b1c97be96d2292";
-const GROQ_API_KEY = "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";
+const YOUR_API_KEY = "<>";
+const BIN_ID = "<>";
+const GROQ_API_KEY = "<>";
 
 let req = new XMLHttpRequest();
 req.responseType = "json";
